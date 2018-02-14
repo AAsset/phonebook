@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Asset">
+    <title>Телефонный справочник</title>
+    <script src="lib/jquery/jquery-2.2.4.min.js"></script>
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
+    <script src="lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type='text/javascript' src='lib/knockout/knockout-3.4.2.js'></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Basic Table</h2>
+    <p>The .table class adds basic styling (light padding and only horizontal dividers) to a table:</p>            
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Номер телефона</th>
+            <th>Комментарий</th>
+            <th>Action</th>
+            <th>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#create"  data-bind="click: addItem">
+                    <i class="glyphicon glyphicon-plus-sign"></i>
+                </button>
+            </th>
+        </tr>
+        </thead>
+        <tbody data-bind="foreach: people">
+        <tr>
+            <td><span data-bind="text: firstName"></span></td>
+            <td><span data-bind="text: lastName"></span></td>
+            <td><span data-bind="text: phoneNum"></span></td>
+            <td><span data-bind="text: comment"></span></td>
+            <td>
+                <div class="btn-group">
+                    <button href="#" class="btn btn-warning" data-toggle="modal" data-target="#edit" data-bind="click: function() { viewModel.editItem($data); }"><i class="glyphicon glyphicon-edit"></i></button>
+                    <button type="button" class="btn btn-danger" data-bind="click: function() { viewModel.removeItem($data); }"><i class="glyphicon glyphicon-remove-sign"></i></button>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="container">
+    <div class="modal fade" id="create" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Create</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="firstName">FirstName:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="firstName" data-bind="value: firstName, uniqueName: true" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="lastName">LastName:</label>
+                            <div class="col-sm-10"> 
+                                <input type="text" class="form-control" id="lastName" data-bind="value: lastName" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="phone">Number Phone:</label>
+                            <div class="col-sm-10"> 
+                                <input type="number" class="form-control" id="phone" data-bind="value: phoneNum" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="comment">Comment:</label>
+                            <div class="col-sm-10"> 
+                                <textarea type="text" class="form-control" id="comment" data-bind="value: comment" required></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                            <button type="button" class="btn btn-default"  data-bind="click: function() { viewModel.addItem($data); }">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div> 
+
+    <div class="modal fade" id="edit" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Edit</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="firstName">FirstName:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="firstName" data-bind="value: editor.firstName">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="lastName">LastName:</label>
+                            <div class="col-sm-10"> 
+                                <input type="text" class="form-control" id="lastName" data-bind="value: editor.lastName">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="phone">Number Phone:</label>
+                            <div class="col-sm-10"> 
+                                <input type="number" class="form-control" id="phone" data-bind="value: editor.phoneNum">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="comment">Comment:</label>
+                            <div class="col-sm-10"> 
+                                <textarea type="text" class="form-control" id="comment" data-bind="value: editor.comment"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="button" class="btn btn-default"  data-bind="click: function() { viewModel.updateItem($data); }">Update</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+function person(firstName, lastName, phoneNum, comment) {
+    return {
+        firstName: ko.observable(firstName),
+        lastName: ko.observable(lastName),
+        phoneNum: ko.observable(phoneNum),
+        comment: ko.observable(comment)
+    }
+}
+
+var viewModel = {
+    people: ko.observableArray([
+        new person(1, "one", 5, 'k'),
+        new person(2, "two", 7, 'k'),
+        new person(3, "three", 4, 'k')
+        ]),
+
+    firstName: ko.observable(),
+    lastName:  ko.observable(""),
+    phoneNum:  ko.observable(""),
+    comment:   ko.observable(""),
+    addItem: function () {
+        if ((this.firstName() != "" && this.lastName() != "" )) {
+        this.people.push(new person(
+            this.firstName(),
+            this.lastName(),
+            this.phoneNum(),
+            this.comment()
+        ));
+        this.firstName("");
+        this.lastName("");
+        this.phoneNum("");
+        this.comment("");
+        }
+    },
+    removeItem: function(pp) {
+        this.people.remove(pp);
+    },
+    editor: new person(),
+    editItem: function(pp) {
+        viewModel.editor.firstName(pp.firstName()).lastName(pp.lastName()).phoneNum(pp.phoneNum()).comment(pp.comment());
+        this.updateItem = function(){
+            pp.firstName(viewModel.editor.firstName()).lastName(viewModel.editor.lastName()).phoneNum(viewModel.editor.phoneNum()).comment(viewModel.editor.comment());
+        };
+    },
+    
+};
+
+ko.applyBindings(viewModel);
+</script>
+</body>
+</html>
